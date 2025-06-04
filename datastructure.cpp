@@ -32,6 +32,26 @@ public:    //this is so confusing but stack is function scope (constructor is fu
 
     }
 
+    void debugPrint() const {
+        Node* current = head;
+        int index = 0;
+    
+        std::cout << "--- DEBUG PRINT ---" << std::endl;
+    
+        while (current != nullptr) {
+            std::cout << "Node: " << index << "\n";
+            std::cout << "Address : " << current << "\n";
+            std::cout << "Data    : " << current->data << "\n";
+            std::cout << "Prev    : " << current->prev << "\n";
+            std::cout << "Next    : " << current->next << "\n";
+            current = current->next;
+            index++;
+        }
+    
+        std::cout <<"end"<< std::endl;
+    }
+    
+
     void append(string value){
 
         if (head==nullptr){ //again has to be nullpointer, cause we are dealing with references here. basically if no one is home
@@ -48,26 +68,68 @@ public:    //this is so confusing but stack is function scope (constructor is fu
 
     }
 
-    bool isEmpty(){
+    bool isEmpty() const{
 
-        if (head == nullptr){
+        if (head == nullptr && tail ==nullptr){
         return true;
+        }
+
+        else{
+        return false;
         }
     }
     //use lambda cause it will be so reused. "for every object here, do somethign" lambda can be print, delete, count whatever
-    void iterate(const function<void(Node*)> & operation){ //when you call iterate you give it new function as  input, must take a node poointer, and does something to thing at address
-        if (head == nullptr){ //anonymous lambda function that will be used as a skeleton for lots of other junk
+    void iterate(const function<void(Node*)> & operation){ //I take an unchanging function. reutnr nothing. and func will operatre on nodes, basically i just go the address and use
+        if (tail == nullptr){ //anonymous lambda function that will be used as a skeleton for lots of other junk HEAD IS A MEMBER VARIABLE ITS OK AND TAIL
             return;
-        }
+        } //so const idk? it treats our tool, this lambda as immutable so future functions know this is whats gonna happen to them, compiler says this tool must not change
 
-        Node* this_node = head; //we dont want to referencce head eveyr tiem we travceese super inefficient
+        Node* this_node = tail; //we dont want to referencce head eveyr tiem we travceese super inefficient
         while (this_node != nullptr){ //
+            Node* prev = this_node -> prev;
             operation(this_node);
-            this_node = this_node->next;
-        }
+            this_node = this_node->prev;
+        }  
+
+        
+
+    }
+
+    void print(){
+        iterate([](Node* current_item){ //we needed the cosnt to say it wont change later
+            cout << current_item-> data << endl; //same as (*node).data but diff syntax so kinda like object
+        });
+
+        
+    }
+    
+    void clear(){
+        iterate([](Node* current_item){
+            delete(current_item);
+
+            
+        });
+
+        head = nullptr;
+        tail = nullptr;
 
 
     }
+
+    void length(){
+        int len = 0; //err this is not working exactly but we shall check it later.
+        iterate([](Node* current_item){
+        });
+        
+
+
+    }
+
+    void step(){
+
+    }
+
+
 
 
 
@@ -75,6 +137,27 @@ public:    //this is so confusing but stack is function scope (constructor is fu
 };
 
 int main(void){
+
+
+    doubly mylist("test"); //need to declare something here
+    bool truth;
+    truth = mylist.isEmpty();
+    cout << truth << endl;
+
+    mylist.append("camera");
+    mylist.append("muffintop");
+
+    mylist.print();
+    mylist.clear();
+    
+
+    truth = mylist.isEmpty();
+    cout << truth << endl;
+
+    mylist.print();
+
+    mylist.debugPrint();
+
 
     return 0;
 
